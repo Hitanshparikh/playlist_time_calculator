@@ -160,10 +160,26 @@ function getTotalDuration() {
   return videos.reduce((sum, item) => sum + item.durationSeconds, 0);
 }
 
+function syncActiveIndexFromPlayer() {
+  if (!player || !videos.length || typeof player.getPlaylistIndex !== "function") {
+    return;
+  }
+
+  const playlistIndex = Number(player.getPlaylistIndex());
+  if (Number.isFinite(playlistIndex) && playlistIndex >= 0 && playlistIndex < videos.length) {
+    if (playlistIndex !== activeIndex) {
+      activeIndex = playlistIndex;
+      renderChapters();
+    }
+  }
+}
+
 function getGlobalElapsed() {
   if (!player || !videos.length) {
     return 0;
   }
+
+  syncActiveIndexFromPlayer();
   const localElapsed = Number(player.getCurrentTime?.() || 0);
   return (videos[activeIndex]?.startedAt || 0) + localElapsed;
 }
@@ -201,6 +217,8 @@ function updateLiveProgress() {
     return;
   }
 
+  syncActiveIndexFromPlayer();
+
   const currentVideo = videos[activeIndex];
   nowPlayingEl.textContent = `Now playing: ${currentVideo.title}`;
 
@@ -227,33 +245,23 @@ function stopProgressTimer() {
   }
 }
 
-function playNext() {
-  if (activeIndex >= videos.length - 1) {
-    stopProgressTimer();
-    setStatus("Playlist finished.");
-    return;
-  }
-
-  activeIndex += 1;
-  const next = videos[activeIndex];
-  player.loadVideoById(next.id, 0);
-  renderChapters();
-  updateLiveProgress();
-}
-
 function jumpToChapter(index, offsetSeconds) {
   if (!player || !videos[index]) {
     return;
   }
 
   activeIndex = index;
-  const target = videos[index];
-  player.loadVideoById(target.id, offsetSeconds);
+  if (typeof player.playVideoAt === "function") {
+    player.playVideoAt(index);
+  }
+  if (offsetSeconds > 0 && typeof player.seekTo === "function") {
+    player.seekTo(offsetSeconds, true);
+  }
   renderChapters();
   updateLiveProgress();
 }
 
-function createOrReplacePlayer(firstVideoId) {
+function createOrReplacePlayer(playlistId, startIndex = 0) {
   if (!playerReady || !window.YT || !window.YT.Player) {
     throw new Error("YouTube player is still loading. Try again in a moment.");
   }
@@ -263,23 +271,37 @@ function createOrReplacePlayer(firstVideoId) {
   }
 
   player = new window.YT.Player("player", {
-    videoId: firstVideoId,
+    videoId: videos[startIndex]?.id,
     playerVars: {
       autoplay: 1,
       controls: 1,
       rel: 0,
       modestbranding: 1,
-      playsinline: 1
+      playsinline: 1,
+      listType: "playlist",
+      list: playlistId,
+      index: startIndex
     },
     events: {
       onReady: () => {
+        syncActiveIndexFromPlayer();
+        renderChapters();
         player.playVideo();
         updateLiveProgress();
       },
       onStateChange: (event) => {
+        syncActiveIndexFromPlayer();
+
         if (event.data === window.YT.PlayerState.ENDED) {
-          playNext();
+          const currentIdx = Number(player.getPlaylistIndex?.() ?? activeIndex);
+          const total = Number(player.getPlaylist?.().length || videos.length);
+          if (currentIdx >= total - 1) {
+            stopProgressTimer();
+            setStatus("Playlist finished.");
+          }
         }
+
+        updateLiveProgress();
       }
     }
   });
@@ -333,7 +355,7 @@ async function onLoadPlaylist() {
     activeIndex = 0;
 
     renderChapters();
-    createOrReplacePlayer(videos[0].id);
+    createOrReplacePlayer(playlistId, 0);
     startProgressTimer();
 
     marathonSection.classList.remove("hidden");
