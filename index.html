@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YouTube Playlist Time Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <main class="container">
+    <header class="hero">
+      <p class="eyebrow">Fast • Accurate • Clean</p>
+      <h1>YouTube Playlist Time Calculator</h1>
+      <p class="hero-subtitle">
+        Paste a playlist URL and get total time, total videos, per-video list, average duration,
+        and time saved across playback speeds.
+      </p>
+    </header>
+
+    <section class="panel input-panel" aria-labelledby="input-title">
+      <h2 id="input-title">Analyze Playlist</h2>
+      <p class="help-text">
+        Paste a playlist URL and analyze it locally. The API key is configured in the script file, so it is not shown on the page.
+      </p>
+      <div class="input-grid">
+        <label class="field">
+          <span>YouTube Playlist Link</span>
+          <div class="input-with-button">
+            <input id="playlistUrl" type="url" placeholder="https://www.youtube.com/playlist?list=..." autocomplete="off" />
+            <button id="pasteBtn" class="btn btn-ghost paste-btn" type="button">Paste</button>
+          </div>
+        </label>
+      </div>
+      <div class="actions">
+        <button id="analyzeBtn" class="btn btn-primary" type="button">Analyze Playlist</button>
+        <button id="clearBtn" class="btn btn-ghost" type="button">Clear</button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="resultsSection" class="results hidden" aria-live="polite">
+      <div class="cards" id="summaryCards"></div>
+
+      <div class="panel split">
+        <section>
+          <h3>Speed Planner</h3>
+          <p class="muted">Simple cards: watch time, finish estimate, and time saved.</p>
+          <p id="currentTimeDisplay" class="clock-pill" aria-live="polite"></p>
+          <div id="speedPlanner" class="speed-planner"></div>
+        </section>
+        <section>
+          <h3>Quick Insights</h3>
+          <p class="muted">Fast summary for decision-making.</p>
+          <div id="quickInsights" class="quick-insights"></div>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="video-list-title">
+        <h3 id="video-list-title">Playlist Videos</h3>
+        <p class="muted">Ordered as in playlist.</p>
+        <p id="selectionHint" class="muted selection-hint"></p>
+        <div id="videoList" class="video-list"></div>
+      </section>
+    </section>
+  </main>
+
+  <template id="videoRowTemplate">
+    <article class="video-item">
+      <img class="thumb" alt="Video thumbnail" loading="lazy" />
+      <div class="video-meta">
+        <h4 class="video-title"></h4>
+        <p class="video-channel"></p>
+      </div>
+      <strong class="video-duration"></strong>
+      <label class="video-toggle" aria-label="Include this video in calculations">
+        <input class="include-checkbox" type="checkbox" checked />
+        <span>Include</span>
+      </label>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
