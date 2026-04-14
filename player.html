@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playlist Marathon Player</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-grid" aria-hidden="true"></div>
+  <main class="container">
+    <header class="hero">
+      <p class="eyebrow">Continuous Playback</p>
+      <h1>Playlist Marathon Player</h1>
+      <p class="hero-subtitle">
+        Play the full playlist as one continuous session with chapter timestamps and live progress.
+      </p>
+    </header>
+
+    <section class="panel input-panel" aria-labelledby="marathon-title">
+      <h2 id="marathon-title">Load Playlist</h2>
+      <div class="input-grid">
+        <label class="field">
+          <span>YouTube Playlist Link</span>
+          <div class="input-with-button">
+            <input id="playlistUrl" type="url" placeholder="https://www.youtube.com/playlist?list=..." autocomplete="off" />
+            <button id="pasteBtn" class="btn btn-ghost paste-btn" type="button">Paste</button>
+          </div>
+        </label>
+      </div>
+      <div class="actions">
+        <button id="loadBtn" class="btn btn-primary" type="button">Load Marathon Player</button>
+        <a class="btn btn-ghost" href="index.html">Back to Calculator</a>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="marathonSection" class="hidden" aria-live="polite">
+      <div class="panel marathon-grid">
+        <section>
+          <div class="video-shell">
+            <div id="player"></div>
+          </div>
+          <div class="live-strip">
+            <span id="nowPlaying">Not playing</span>
+            <span id="globalProgress">00:00 / 00:00</span>
+          </div>
+        </section>
+
+        <aside>
+          <h3>Timeline Chapters</h3>
+          <p class="muted">Click any chapter to jump.</p>
+          <div id="chapters" class="chapters"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="player.js"></script>
+</body>
+</html>

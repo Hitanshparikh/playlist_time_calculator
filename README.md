@@ -12,6 +12,7 @@ A simple, fast, static web app that calculates the total duration of a YouTube p
 - Live current-time updates
 - Quick insights and a clean premium-style UI
 - Clipboard paste button for the playlist URL
+- Marathon player page for continuous playlist playback with chapter timestamps
 
 ## Requirements
 
@@ -26,6 +27,12 @@ The app is fully static and runs directly in the browser.
 2. Set your API key in the `HARDCODED_API_KEY` constant near the top of the file
 3. Open `index.html` in your browser
 4. Paste a playlist link and click **Analyze Playlist**
+
+To use the continuous playlist player:
+
+1. Open `player.html` in your browser
+2. Paste playlist URL and click **Load Marathon Player**
+3. Use chapter timestamps to jump across the playlist timeline
 
 > The API key is not shown in the page UI. It is read from the script file only.
 
@@ -61,6 +68,8 @@ Because this is a client-side app, the API key is visible in the JavaScript file
 - `index.html` - page structure
 - `styles.css` - UI styling
 - `script.js` - playlist analysis logic
+- `player.html` - continuous playlist player page
+- `player.js` - continuous playback and chapter timeline logic
 - `README.md` - project documentation
 
 ## License
