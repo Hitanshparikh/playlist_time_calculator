@@ -328,9 +328,31 @@ input:focus {
   font-size: 0.86rem;
 }
 
+.toggle-control {
+  margin-bottom: 0.8rem;
+  padding: 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(72, 214, 184, 0.08);
+}
+
+.video-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(120deg, var(--accent), #8be8d4);
+  color: #0f1715;
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
 .video-item {
   display: grid;
-  grid-template-columns: 110px 1fr auto auto;
+  grid-template-columns: auto 110px 1fr auto auto;
   gap: 0.75rem;
   align-items: center;
   border: 1px solid var(--line);
@@ -490,15 +512,15 @@ input:focus {
   }
 
   .video-item {
-    grid-template-columns: 90px 1fr auto;
+    grid-template-columns: auto 90px 1fr auto;
   }
 
   .video-duration {
-    grid-column: 2 / 4;
+    grid-column: 3 / 4;
   }
 
   .video-toggle {
-    grid-column: 3 / 4;
+    grid-column: 4 / 5;
     justify-self: end;
   }
 

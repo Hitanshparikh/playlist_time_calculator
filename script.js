@@ -12,6 +12,8 @@ const videoList = document.getElementById("videoList");
 const videoRowTemplate = document.getElementById("videoRowTemplate");
 const selectionHint = document.getElementById("selectionHint");
 const currentTimeDisplay = document.getElementById("currentTimeDisplay");
+const numbersListInput = document.getElementById("numbersList");
+const toggleBtn = document.getElementById("toggleBtn");
 
 const SPEEDS = [1, 1.25, 1.5, 1.75, 2];
 
@@ -26,6 +28,7 @@ analyzeBtn.addEventListener("click", onAnalyze);
 clearBtn.addEventListener("click", onClear);
 pasteBtn.addEventListener("click", onPastePlaylistUrl);
 videoList.addEventListener("change", onVideoToggle);
+toggleBtn.addEventListener("click", onSmartToggle);
 
 startLiveClock();
 
@@ -289,19 +292,22 @@ function renderVideoList(videos) {
   videoList.innerHTML = "";
 
   const fragment = document.createDocumentFragment();
-  videos.forEach((video) => {
+  videos.forEach((video, index) => {
     const node = videoRowTemplate.content.cloneNode(true);
+    const numberEl = node.querySelector(".video-number");
     const thumb = node.querySelector(".thumb");
     const title = node.querySelector(".video-title");
     const channel = node.querySelector(".video-channel");
     const duration = node.querySelector(".video-duration");
     const checkbox = node.querySelector(".include-checkbox");
 
+    numberEl.textContent = String(index + 1);
     thumb.src = video.thumbnail;
     title.textContent = video.title;
     channel.textContent = video.channel;
     duration.textContent = formatDuration(video.durationSeconds);
     checkbox.dataset.videoId = video.id;
+    checkbox.dataset.videoIndex = String(index + 1);
     checkbox.checked = selectedVideoIds.has(video.id);
 
     fragment.appendChild(node);
@@ -346,6 +352,62 @@ function onVideoToggle(event) {
   }
 
   refreshStatsFromSelection();
+}
+
+function parseNumbersInput(input) {
+  const parts = input.split(",").map((s) => s.trim());
+  const numbers = new Set();
+
+  for (const part of parts) {
+    if (part.includes("-")) {
+      const [start, end] = part.split("-").map((s) => s.trim());
+      const startNum = Number(start);
+      const endNum = Number(end);
+      if (Number.isFinite(startNum) && Number.isFinite(endNum)) {
+        for (let i = Math.min(startNum, endNum); i <= Math.max(startNum, endNum); i++) {
+          if (i > 0) numbers.add(i);
+        }
+      }
+    } else {
+      const num = Number(part);
+      if (Number.isFinite(num) && num > 0) {
+        numbers.add(num);
+      }
+    }
+  }
+
+  return numbers;
+}
+
+function onSmartToggle() {
+  const input = numbersListInput.value.trim();
+  if (!input) {
+    setStatus("Enter video numbers to toggle (e.g., 1,3,5 or 2-5).", true);
+    return;
+  }
+
+  const targetNumbers = parseNumbersInput(input);
+  if (targetNumbers.size === 0) {
+    setStatus("No valid video numbers found.", true);
+    return;
+  }
+
+  const checkboxes = videoList.querySelectorAll(".include-checkbox");
+  let toggleCount = 0;
+
+  checkboxes.forEach((checkbox) => {
+    const index = Number(checkbox.dataset.videoIndex);
+    if (targetNumbers.has(index)) {
+      checkbox.checked = !checkbox.checked;
+      toggleCount++;
+
+      const event = new Event("change", { bubbles: true });
+      checkbox.dispatchEvent(event);
+    }
+  });
+
+  setStatus(`Toggled ${toggleCount} video(s).`);
+  numbersListInput.value = "";
 }
 
 async function onAnalyze() {

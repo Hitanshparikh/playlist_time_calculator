@@ -64,6 +64,16 @@
         <h3 id="video-list-title">Playlist Videos</h3>
         <p class="muted">Ordered as in playlist.</p>
         <p id="selectionHint" class="muted selection-hint"></p>
+        <div class="toggle-control">
+          <label class="field">
+            <span>Smart Toggle by Number</span>
+            <div class="input-with-button">
+              <input id="numbersList" type="text" placeholder="e.g., 1,3,5 or 2-5" autocomplete="off" />
+              <button id="toggleBtn" class="btn btn-ghost" type="button">Toggle</button>
+            </div>
+          </label>
+          <p class="muted" style="margin-top: 0.4rem; font-size: 0.85rem;">Enter video numbers separated by commas or use ranges (e.g., "1-3,7,9"). Checked videos will be unchecked and vice versa.</p>
+        </div>
         <div id="videoList" class="video-list"></div>
       </section>
     </section>
@@ -71,6 +81,7 @@
 
   <template id="videoRowTemplate">
     <article class="video-item">
+      <span class="video-number"></span>
       <img class="thumb" alt="Video thumbnail" loading="lazy" />
       <div class="video-meta">
         <h4 class="video-title"></h4>
