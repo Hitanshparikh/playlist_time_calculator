@@ -13,6 +13,7 @@ const videoRowTemplate = document.getElementById("videoRowTemplate");
 const selectionHint = document.getElementById("selectionHint");
 const currentTimeDisplay = document.getElementById("currentTimeDisplay");
 const exportTitlesBtn = document.getElementById("exportTitlesBtn");
+const createSelectedPlaylistBtn = document.getElementById("createSelectedPlaylistBtn");
 const includeDurationInExport = document.getElementById("includeDurationInExport");
 const includeSelectedOnlyExport = document.getElementById("includeSelectedOnlyExport");
 const numbersListInput = document.getElementById("numbersList");
@@ -35,6 +36,7 @@ pasteBtn.addEventListener("click", onPastePlaylistUrl);
 videoList.addEventListener("change", onVideoToggle);
 toggleBtn.addEventListener("click", onSmartToggle);
 exportTitlesBtn.addEventListener("click", onExportTitles);
+createSelectedPlaylistBtn.addEventListener("click", onCreateSelectedPlaylist);
 includeDurationInExport.addEventListener("change", onExportOptionChange);
 includeSelectedOnlyExport.addEventListener("change", onExportOptionChange);
 
@@ -482,6 +484,33 @@ function onExportTitles() {
 
   downloadTextFile(filename, text);
   setStatus(`Downloaded ${videos.length} title(s) as a text file.`);
+}
+
+function onCreateSelectedPlaylist() {
+  if (!currentVideos.length) {
+    setStatus("Load a playlist before creating a selected-only playlist.", true);
+    return;
+  }
+
+  const selectedVideos = getSelectedVideos();
+  if (!selectedVideos.length) {
+    setStatus("No selected videos. Toggle at least one video to include it.", true);
+    return;
+  }
+
+  const maxVideos = 50;
+  const videoIds = selectedVideos.map((video) => video.id).slice(0, maxVideos);
+  const url = `https://www.youtube.com/watch_videos?video_ids=${videoIds.join(",")}`;
+
+  window.open(url, "_blank", "noopener,noreferrer");
+
+  if (selectedVideos.length > maxVideos) {
+    setStatus(
+      `Opened selected playlist with first ${maxVideos} videos (YouTube URL limits apply).`
+    );
+  } else {
+    setStatus(`Opened selected playlist with ${selectedVideos.length} video(s).`);
+  }
 }
 
 function refreshStatsFromSelection() {
