@@ -12,6 +12,7 @@ A simple, fast, static web app that calculates the total duration of a YouTube p
 - Live current-time updates
 - Quick insights and a clean premium-style UI
 - Clipboard paste button for the playlist URL
+- Export playlist video titles to a text file with playlist numbers and optional durations
 - Marathon player page for continuous playlist playback with chapter timestamps
 
 ## Requirements
@@ -27,6 +28,7 @@ The app is fully static and runs directly in the browser.
 2. Set your API key in the `HARDCODED_API_KEY` constant near the top of the file
 3. Open `index.html` in your browser
 4. Paste a playlist link and click **Analyze Playlist**
+5. Use the **Download Text Doc** button in the playlist results to export titles
 
 To use the continuous playlist player:
 

@@ -64,6 +64,21 @@
         <h3 id="video-list-title">Playlist Videos</h3>
         <p class="muted">Ordered as in playlist.</p>
         <p id="selectionHint" class="muted selection-hint"></p>
+        <div class="export-panel" aria-label="Export playlist titles">
+          <div class="export-controls">
+            <label class="export-option">
+              <input id="includeDurationInExport" type="checkbox" checked />
+              <span>Include video time</span>
+            </label>
+            <label class="export-option">
+              <input id="includeSelectedOnlyExport" type="checkbox" />
+              <span>Export selected videos only</span>
+            </label>
+          </div>
+          <div class="export-actions">
+            <button id="exportTitlesBtn" class="btn btn-primary" type="button">Download Text Doc</button>
+          </div>
+        </div>
         <div class="toggle-control">
           <label class="field">
             <span>Smart Toggle by Number</span>
